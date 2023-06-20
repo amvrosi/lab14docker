@@ -1,0 +1,26 @@
+name: Docker CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check the repo
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t bebrovich/lab14docker:${{ github.sha }} .
+
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Push Docker image
+        run: docker push bebrovich/lab14docker:${{ github.sha }}
